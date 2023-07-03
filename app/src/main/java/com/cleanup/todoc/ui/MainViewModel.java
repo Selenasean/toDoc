@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModel;
 import com.cleanup.todoc.data.model.Project;
 import com.cleanup.todoc.data.model.Task;
 import com.cleanup.todoc.data.repository.Repository;
+import com.cleanup.todoc.ui.utils.SortMethod;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MainViewModel extends ViewModel {
 
@@ -34,6 +34,14 @@ public class MainViewModel extends ViewModel {
     }
 
     /**
+     * Get all projects
+     * @return List of projects
+     */
+    public List<Project> getProjects(){
+        return mRepository.getProjects();
+    }
+
+    /**
      * To parse into TaskViewState for UI
      *
      * @param list
@@ -43,7 +51,8 @@ public class MainViewModel extends ViewModel {
         List<TaskViewState> taskViewStateList = new ArrayList<>();
 
         for (Task task : list) {
-            Project project = Objects.requireNonNull(mRepository.getProjectById(task.getProjectId()));
+            //TODO : find how to get a projectById non type <liveData>
+            Project project = mRepository.getProjectById(task.getProjectId());
             taskViewStateList.add(new TaskViewState(
                     task.getId(),
                     task.getName(),
@@ -53,24 +62,38 @@ public class MainViewModel extends ViewModel {
         return taskViewStateList;
     }
 
+    /**
+     * Create a task
+     * @param task we want to create
+     */
     public void createTask(Task task) {
         mRepository.createTask(task);
     }
 
+    /**
+     * Delete a Task using his id
+     *
+     * @param taskId id of the task we want to delete
+     */
     public void deleteTask(long taskId) {
         mRepository.deleteTask(taskId);
     }
 
-    /**
-     * Get all projects
-     * @return List of projects
-     */
-    public LiveData<List<Project>> getProjects(){
-        return null;
-//        return mRepository.getProjects();
+
+    public SortMethod sortAlphabetical() {
+        return SortMethod.ALPHABETICAL;
     }
 
-    /**
-     * Create a task
-     */
+    public SortMethod sortAlphabeticalInverted() {
+        return SortMethod.ALPHABETICAL_INVERTED;
+    }
+
+    public SortMethod sortOlderFirst() {
+        return SortMethod.OLD_FIRST;
+    }
+
+    public SortMethod sortRecentFirst() {
+        return SortMethod.RECENT_FIRST;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.cleanup.todoc.ui;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +35,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     /**
      * Instantiates a new TasksAdapter.
-     *
-
      */
     TasksAdapter(@NonNull final DeleteTaskListener deleteTaskListener) {
 
@@ -116,7 +115,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         /**
          * Instantiates a new TaskViewHolder.
          *
-         * @param itemView the view of the task item
+         * @param itemView           the view of the task item
          * @param deleteTaskListener the listener for when a task needs to be deleted to set
          */
         TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener) {
@@ -148,16 +147,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         void bind(TaskViewState task) {
             lblTaskName.setText(task.getNameTask());
             imgDelete.setTag(task);
-            //TODO : logic method to bind color of project to each task
-//            final Project taskProject = task.getProject();
-//            if (taskProject != null) {
-//                imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
-//                lblProjectName.setText(taskProject.getName());
-//            } else {
-//                imgProject.setVisibility(View.INVISIBLE);
-//                lblProjectName.setText("");
-//            }
-
+            imgProject.setSupportImageTintList(ColorStateList.valueOf(task.getColorProject()));
+            lblProjectName.setText(task.getNameTask());
         }
     }
 }

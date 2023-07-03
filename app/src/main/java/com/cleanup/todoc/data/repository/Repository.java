@@ -1,16 +1,14 @@
 package com.cleanup.todoc.data.repository;
 
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.cleanup.todoc.data.AppDatabase;
 import com.cleanup.todoc.data.model.Project;
 import com.cleanup.todoc.data.model.Task;
 
-import java.util.Arrays;
-import java.util.Comparator;
+
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -20,12 +18,17 @@ import java.util.concurrent.Executors;
  */
 public class Repository {
 
-    private AppDatabase database;
-    private Executor executor = Executors.newSingleThreadExecutor();
+    private final AppDatabase database;
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
+    /**
+     * Constructor
+     * @param database Room
+     */
     public Repository(AppDatabase database) {
         this.database = database;
     }
+
 
     /**
      * Get a list of tasks type LiveData
@@ -39,14 +42,13 @@ public class Repository {
      * Returns all the projects of the application.
      * @return all the projects of the application
      */
-    @NonNull
     public List<Project> getProjects(){
-//        return database.projectDao().getProjects();
+        return  database.projectDao().getProjects();
 
-        return Arrays.asList(
-                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-                new Project(3L, "Projet Circus", 0xFFA3CED2));
+//        return Arrays.asList(
+//                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
+//                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
+//                new Project(3L, "Projet Circus", 0xFFA3CED2));
     }
 
 
@@ -59,13 +61,7 @@ public class Repository {
      */
     @Nullable
     public Project getProjectById(long id) {
-//        List<Project> projects = getProjects().getValue();
-        for (Project project : getProjects()) {
-            if (project.getId() == id){
-              return project;
-            }
-        }
-        return null;
+       return database.projectDao().getProjectById(id);
     }
 
     /**

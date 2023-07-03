@@ -46,10 +46,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private List<Project> allProjects = Arrays.asList(
-                    new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-                    new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-                new Project(3L, "Projet Circus", 0xFFA3CED2));
+    private List<Project> allProjects = mMainViewModel.getProjects();
 
     /**
      * List of all current tasks of the application
@@ -62,11 +59,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private final TasksAdapter adapter = new TasksAdapter(this);
 
-    /**
-     * The sort method to be used to display tasks
-     */
-    @NonNull
-    private SortMethod sortMethod = SortMethod.NONE;
+    //TODO: do filter
+//    /**
+//     * The sort method to be used to display tasks
+//     */
+//    @NonNull
+//    private SortMethod sortMethod = SortMethod.NONE;
 
     /**
      * Dialog to create a new task
@@ -133,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void setViewModel() {
         mMainViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainViewModel.class);
         mMainViewModel.getTasks().observe(this, taskViewStates -> render(taskViewStates));
-//        mMainViewModel.getProjects().observe(this, projectsList -> allProjects = projectsList);
     }
 
     /**
@@ -168,19 +165,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        // TODO : call viewModel to sort
         if (id == R.id.filter_alphabetical) {
-            sortMethod = SortMethod.ALPHABETICAL;
+            mMainViewModel.sortAlphabetical();
         } else if (id == R.id.filter_alphabetical_inverted) {
-            sortMethod = SortMethod.ALPHABETICAL_INVERTED;
+            mMainViewModel.sortAlphabeticalInverted();
         } else if (id == R.id.filter_oldest_first) {
-            sortMethod = SortMethod.OLD_FIRST;
+            mMainViewModel.sortOlderFirst();
         } else if (id == R.id.filter_recent_first) {
-            sortMethod = SortMethod.RECENT_FIRST;
+            mMainViewModel.sortRecentFirst();
         }
-
-        updateTasks();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -191,8 +184,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(TaskViewState task) {
         mMainViewModel.deleteTask(task.getId());
-        //TODO: remove updateTask ?
-        updateTasks();
     }
 
     /**
@@ -201,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param dialogInterface the current displayed dialog
      */
     private void onPositiveButtonClick(DialogInterface dialogInterface) {
-        // If dialog is open
+        // If dialog is open to create a task
         if (dialogEditText != null && dialogSpinner != null) {
             // Get the name of the task
             String taskName = dialogEditText.getText().toString();
@@ -212,28 +203,22 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 taskProject = (Project) dialogSpinner.getSelectedItem();
             }
 
-            // If a name has not been set
+            // If a name has not been set - set error message
             if (taskName.trim().isEmpty()) {
                 dialogEditText.setError(getString(R.string.empty_task_name));
             }
-            // If both project and name of the task have been set
+            // If both project and name of the task have been set - create the task
             else if (taskProject != null) {
-                // TODO: Replace this by id of persisted task
-                long id = (long) (Math.random() * 50000);
-
-
                 Task task = new Task(
-                        id,
                         taskProject.getId(),
                         taskName,
                         new Date().getTime()
                 );
-                //TODO : call viewModel
                 mMainViewModel.createTask(task);
-
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
+            // close the dialogInterface and do not create a task
             else{
                 dialogInterface.dismiss();
             }
@@ -262,12 +247,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
-        if (tasks.size() == 0) {
-            lblNoTasks.setVisibility(View.VISIBLE);
-            listTasks.setVisibility(View.GONE);
-        } else {
-            lblNoTasks.setVisibility(View.GONE);
-            listTasks.setVisibility(View.VISIBLE);
 //            switch (sortMethod) {
 //                case ALPHABETICAL:
 //                    Collections.sort(tasks, new TasksComparator.TaskAZComparator());
@@ -283,8 +262,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 //                    break;
 //
 //            }
-            adapter.updateTasks(tasks);
-        }
     }
 
     /**

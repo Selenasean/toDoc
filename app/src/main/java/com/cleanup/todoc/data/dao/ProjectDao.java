@@ -14,11 +14,11 @@ import java.util.List;
 public interface ProjectDao {
 
     @Query("SELECT * FROM Project WHERE id = :projectId")
-    LiveData<Project> getProjectById(long projectId);
+    Project getProjectById(long projectId);
 
     @Insert
     void createProject(Project project);
 
     @Query("SELECT * FROM Project")
-    LiveData<List<Project>> getProjects();
+    List<Project> getProjects();
 }
