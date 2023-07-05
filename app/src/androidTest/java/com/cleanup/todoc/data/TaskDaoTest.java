@@ -39,7 +39,6 @@ public class TaskDaoTest {
         this.database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
 
                         AppDatabase.class)
-                .allowMainThreadQueries()
                 .build();
         database.projectDao().createProject(new Project(
                 PROJECT_ID,
@@ -66,6 +65,7 @@ public class TaskDaoTest {
         List<Task> taskList = LiveDataTestUtils.getOrAwaitValue(this.database.taskDao().getTasks());
         Truth.assertThat(taskList).contains(TASK_DEMO);
     }
+
 
     @Test
     public void deleteTask_withSuccess() throws InterruptedException {

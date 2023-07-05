@@ -1,7 +1,6 @@
 package com.cleanup.todoc.data.repository;
 
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
 import com.cleanup.todoc.data.AppDatabase;
@@ -40,24 +39,13 @@ public class Repository {
 
     /**
      * Returns all the projects of the application.
+     *
      * @return all the projects of the application
      */
-    public List<Project> getProjects(){
+    public LiveData<List<Project>> getProjects(){
         return database.projectDao().getProjects();
     }
 
-
-    /**
-     * Returns the project with the given unique identifier, or null if no project with that
-     * identifier can be found.
-     *
-     * @param id the unique identifier of the project to return
-     * @return the project with the given unique identifier, or null if it has not been found
-     */
-    @Nullable
-    public Project getProjectById(long id) {
-       return database.projectDao().getProjectById(id);
-    }
 
     /**
      * Create a Task

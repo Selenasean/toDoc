@@ -40,13 +40,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private MainViewModel mMainViewModel;
 
-    /**
-     * List of all projects available in the application
-     */
-    private final List<Project> allProjects = Arrays.asList(
-            new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-            new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-            new Project(3L, "Projet Circus", 0xFFA3CED2));
+
+//            Arrays.asList(
+//            new Project(1L, "Projet Tartampion", 0xFFEADAD1),
+//            new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
+//            new Project(3L, "Projet Circus", 0xFFA3CED2));
 
     /**
      * List of all current tasks of the application
@@ -58,13 +56,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * The adapter which handles the list of tasks
      */
     private final TasksAdapter adapter = new TasksAdapter(this);
-
-    // TODO: do filter
-//    /**
-//     * The sort method to be used to display tasks
-//     */
-//    @NonNull
-//    private SortMethod sortMethod = SortMethod.NONE;
 
     /**
      * Dialog to create a new task
@@ -125,12 +116,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         setViewModel();
     }
 
+    private List<Project> allProjects;
+
     /**
      * Settings to link ViewModel, Observer and UI
      */
     private void setViewModel() {
         mMainViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainViewModel.class);
         mMainViewModel.getTasks().observe(this, taskViewStates -> render(taskViewStates));
+        mMainViewModel.getProjects().observe(this, projects -> allProjects = projects);
     }
 
     /**
@@ -168,38 +162,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.filter_alphabetical) {
-            //filterByAlphabetical();
+            mMainViewModel.sortAlphabetical(SortMethod.ALPHABETICAL);
         } else if (id == R.id.filter_alphabetical_inverted) {
-            //filterByAlphabeticalInverted();
+            mMainViewModel.sortAlphabeticalInverted(SortMethod.ALPHABETICAL_INVERTED);
         } else if (id == R.id.filter_oldest_first) {
-            // filterByOldestFirst();
+            mMainViewModel.sortOlderFirst(SortMethod.OLD_FIRST);
         } else if (id == R.id.filter_recent_first) {
-            // filterByRecentFirst();
-        } else if (id == R.id.filter_reset){
-            resetFilter();
+            mMainViewModel.sortRecentFirst(SortMethod.RECENT_FIRST);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void resetFilter() {
-        mMainViewModel.resetFilter(SortMethod.NONE);
-    }
-
-    private void filterByRecentFirst() {
-        mMainViewModel.sortRecentFirst(SortMethod.RECENT_FIRST);
-    }
-
-    private void filterByOldestFirst() {
-        mMainViewModel.sortOlderFirst(SortMethod.OLD_FIRST);
-    }
-
-    private void filterByAlphabeticalInverted() {
-        mMainViewModel.sortAlphabeticalInverted(SortMethod.ALPHABETICAL_INVERTED);
-    }
-
-    private void filterByAlphabetical() {
-        mMainViewModel.sortAlphabetical(SortMethod.ALPHABETICAL);
-    }
 
     /**
      * Method that delete a task

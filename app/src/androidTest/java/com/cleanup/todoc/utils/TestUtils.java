@@ -10,8 +10,6 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.espresso.util.HumanReadables;
 
-import com.cleanup.todoc.RecyclerViewMatcher;
-
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
