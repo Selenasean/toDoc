@@ -10,6 +10,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * <p>Model for the tasks of the application.</p>
@@ -73,20 +74,26 @@ public class Task {
         this.creationTimestamp = creationTimestamp;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+        Task task = (Task) o;
+        return getId() == task.getId() && getProjectId() == task.getProjectId() && getCreationTimestamp() == task.getCreationTimestamp() && getName().equals(task.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getProjectId(), getName(), getCreationTimestamp());
+    }
+
+    // GETTERS
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public long getProjectId() {
         return projectId;
-    }
-
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
     }
 
     @NonNull
@@ -94,56 +101,25 @@ public class Task {
         return name;
     }
 
-    public void setName(@NonNull String name) {
-        this.name = name;
-    }
-
     public long getCreationTimestamp() {
         return creationTimestamp;
+    }
+
+    // SETTERS
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setName(@NonNull String name) {
+        this.name = name;
     }
 
     public void setCreationTimestamp(long creationTimestamp) {
         this.creationTimestamp = creationTimestamp;
     }
 
-    //TODO : clean comments
-//    /**
-//     * Comparator to sort task from A to Z
-//     */
-//    public static class TaskAZComparator implements Comparator<Task> {
-//        @Override
-//        public int compare(Task left, Task right) {
-//            return left.name.compareTo(right.name);
-//        }
-//    }
-//
-//    /**
-//     * Comparator to sort task from Z to A
-//     */
-//    public static class TaskZAComparator implements Comparator<Task> {
-//        @Override
-//        public int compare(Task left, Task right) {
-//            return right.name.compareTo(left.name);
-//        }
-//    }
-//
-//    /**
-//     * Comparator to sort task from last created to first created
-//     */
-//    public static class TaskRecentComparator implements Comparator<Task> {
-//        @Override
-//        public int compare(Task left, Task right) {
-//            return (int) (right.creationTimestamp - left.creationTimestamp);
-//        }
-//    }
-//
-//    /**
-//     * Comparator to sort task from first created to last created
-//     */
-//    public static class TaskOldComparator implements Comparator<Task> {
-//        @Override
-//        public int compare(Task left, Task right) {
-//            return (int) (left.creationTimestamp - right.creationTimestamp);
-//        }
-//    }
 }

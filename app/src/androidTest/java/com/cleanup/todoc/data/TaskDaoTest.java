@@ -30,35 +30,21 @@ public class TaskDaoTest {
 
     // FOR DATA
     private AppDatabase database;
-    private Executor executors = Executors.newSingleThreadExecutor();
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
     public void initDb() throws Exception {
-
         this.database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
 
                         AppDatabase.class)
-                .addCallback(new RoomDatabase.Callback() {
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        executors.execute(()->
-                                database.projectDao().createProject(new Project(
-                                        PROJECT_ID,
-                                        "Projet Tartampion",
-                                        0xFFEADAD1)));
-
-                    }
-                })
-
                 .allowMainThreadQueries()
-
                 .build();
-
-
+        database.projectDao().createProject(new Project(
+                PROJECT_ID,
+                "Projet Tartampion",
+                0xFFEADAD1));
     }
 
     @After
@@ -74,9 +60,8 @@ public class TaskDaoTest {
 
     @Test
     public void createTask_and_getTasks_WithSuccess() throws InterruptedException {
-        //TODO: test failed
         //WHEN add a task in database
-         executors.execute(()-> database.taskDao().createTask(TASK_DEMO));
+        database.taskDao().createTask(TASK_DEMO);
         //THEN
         List<Task> taskList = LiveDataTestUtils.getOrAwaitValue(this.database.taskDao().getTasks());
         Truth.assertThat(taskList).contains(TASK_DEMO);

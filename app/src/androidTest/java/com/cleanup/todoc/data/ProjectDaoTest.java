@@ -32,10 +32,6 @@ import java.util.concurrent.Executors;
 public class ProjectDaoTest {
     // FOR DATA
     private AppDatabase database;
-    private Executor executors = Executors.newSingleThreadExecutor();
-
-    @Rule
-    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
     public void initDb() throws Exception {
@@ -43,18 +39,9 @@ public class ProjectDaoTest {
         this.database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
 
                         AppDatabase.class)
-                .addCallback(new RoomDatabase.Callback() {
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        executors.execute(()->database.projectDao().createProject(new Project(1L, "Projet Tartampion", 0xFFEADAD1)));
-
-                    }
-                })
-
                 .allowMainThreadQueries()
-
                 .build();
+        database.projectDao().createProject(new Project(1L, "Projet Tartampion", 0xFFEADAD1));
     }
 
     @After
@@ -63,32 +50,31 @@ public class ProjectDaoTest {
     }
 
     //DATA FOR TEST
-    private Project PROJECT_IN_DB = new Project(1L, "Projet Tartampion", 0xFFEADAD1);
-    private Project PROJECT_DEMO = new Project(4L, "Projet Test",0xFFEADAD1 );
+    private final Project PROJECT_IN_DB = new Project(1L, "Projet Tartampion", 0xFFEADAD1);
+    private final Project PROJECT_DEMO = new Project(4L, "Projet Test",0xFFEADAD1 );
 
     @Test
-    public void getAllProjects_withSuccess() throws InterruptedException {
-        //TODO: test failed
+    public void getAllProjects_withSuccess(){
         //WHEN
-        List<Project> projectsList = LiveDataTestUtils.getOrAwaitValue(database.projectDao().getProjects());
+        List<Project> projectsList = database.projectDao().getProjects();
         //THEN
-        Log.i("projectTest", String.valueOf(projectsList));
-        Log.i("projectTest", String.valueOf(PROJECT_IN_DB));
-        Truth.assertThat(projectsList).containsExactly(new Project(1L, "Projet Tartampion", 0xFFEADAD1));
+        Truth.assertThat(projectsList).containsExactly(PROJECT_IN_DB);
     }
 
     @Test
     public void getProjectById_withSuccess(){
-
+        //WHEN
+        Project recoveredProject = database.projectDao().getProjectById(PROJECT_IN_DB.getId());
+        //THEN
+        Truth.assertThat(PROJECT_IN_DB).isEqualTo(recoveredProject);
     }
 
     @Test
-    public void createProject_withSuccess() throws InterruptedException {
-        //TODO: test failed
+    public void createProject_withSuccess() {
         //WHEN
         database.projectDao().createProject(PROJECT_DEMO);
         //THEN
-        List<Project> projectsList = LiveDataTestUtils.getOrAwaitValue(database.projectDao().getProjects());
+        List<Project> projectsList = database.projectDao().getProjects();
         Truth.assertThat(projectsList).containsExactlyElementsIn(Arrays.asList(PROJECT_IN_DB,PROJECT_DEMO));
     }
 }

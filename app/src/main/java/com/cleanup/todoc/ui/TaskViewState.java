@@ -4,7 +4,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
 /**
- * ViewState for Task, which is the model data have to fit into
+ * ViewState for Task, which is the model the data have to fit into
  */
 public class TaskViewState {
 

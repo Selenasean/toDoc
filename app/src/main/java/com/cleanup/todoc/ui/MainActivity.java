@@ -22,14 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.data.model.Project;
 import com.cleanup.todoc.data.model.Task;
-import com.cleanup.todoc.data.repository.Repository;
 import com.cleanup.todoc.ui.utils.SortMethod;
-import com.cleanup.todoc.ui.utils.TasksComparator;
 import com.cleanup.todoc.ui.utils.injection.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +43,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private List<Project> allProjects = mMainViewModel.getProjects();
+    private final List<Project> allProjects = Arrays.asList(
+            new Project(1L, "Projet Tartampion", 0xFFEADAD1),
+            new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
+            new Project(3L, "Projet Circus", 0xFFA3CED2));
 
     /**
      * List of all current tasks of the application
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private final TasksAdapter adapter = new TasksAdapter(this);
 
-    //TODO: do filter
+    // TODO: do filter
 //    /**
 //     * The sort method to be used to display tasks
 //     */
@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Method that display UI,
      * if list is empty show a icon and an image,
      * else show the list
+     *
      * @param taskViewStates : a list of tasks type ViewState
      */
     private void render(List<TaskViewState> taskViewStates) {
@@ -159,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     /**
      * Let user choose an option and sort the list accordingly
+     *
      * @param item The menu item that was selected.
      * @return the option selected
      */
@@ -166,19 +168,42 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.filter_alphabetical) {
-            mMainViewModel.sortAlphabetical();
+            //filterByAlphabetical();
         } else if (id == R.id.filter_alphabetical_inverted) {
-            mMainViewModel.sortAlphabeticalInverted();
+            //filterByAlphabeticalInverted();
         } else if (id == R.id.filter_oldest_first) {
-            mMainViewModel.sortOlderFirst();
+            // filterByOldestFirst();
         } else if (id == R.id.filter_recent_first) {
-            mMainViewModel.sortRecentFirst();
+            // filterByRecentFirst();
+        } else if (id == R.id.filter_reset){
+            resetFilter();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void resetFilter() {
+        mMainViewModel.resetFilter(SortMethod.NONE);
+    }
+
+    private void filterByRecentFirst() {
+        mMainViewModel.sortRecentFirst(SortMethod.RECENT_FIRST);
+    }
+
+    private void filterByOldestFirst() {
+        mMainViewModel.sortOlderFirst(SortMethod.OLD_FIRST);
+    }
+
+    private void filterByAlphabeticalInverted() {
+        mMainViewModel.sortAlphabeticalInverted(SortMethod.ALPHABETICAL_INVERTED);
+    }
+
+    private void filterByAlphabetical() {
+        mMainViewModel.sortAlphabetical(SortMethod.ALPHABETICAL);
+    }
+
     /**
      * Method that delete a task
+     *
      * @param task the task that needs to be deleted
      */
     @Override
@@ -219,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             // If name has been set, but project has not been set (this should never occur)
             // close the dialogInterface and do not create a task
-            else{
+            else {
                 dialogInterface.dismiss();
             }
         }
