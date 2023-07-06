@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 /**
  * Instrumented test, which will execute on an Android device.
  *
- * @author Gaëtan HERFRAY
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 

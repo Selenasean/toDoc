@@ -16,8 +16,10 @@ import com.cleanup.todoc.data.model.Task;
 
 import java.util.concurrent.Executors;
 
+/**
+ * Abstract class that links DAO & configure our dataBase
+ */
 @Database(entities = {Task.class, Project.class}, version = 1, exportSchema = false)
-
 public abstract class AppDatabase extends RoomDatabase {
 
     //DAO
@@ -41,20 +43,18 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+
     private static Callback prepopulateDatabase(){
-        Log.i("ROOM", "ça passe");
         return new Callback(){
             @Override
             public void onCreate(@NonNull SupportSQLiteDatabase db){
                 super.onCreate(db);
-                Log.i("ROOM", "ça passe dans le oncreate");
 
                 //create projects in database - they are constant
                 Executors.newSingleThreadExecutor().execute(()-> {
                         INSTANCE.projectDao().createProject(new Project(1L, "Projet Tartampion", 0xFFEADAD1));
                         INSTANCE.projectDao().createProject(new Project(2L, "Projet Lucidia", 0xFFB4CDBA));
                         INSTANCE.projectDao().createProject(new Project(3L, "Projet Circus", 0xFFA3CED2));
-                    Log.i("ROOM", "ça passe dans executor");
                 });
             }
         };

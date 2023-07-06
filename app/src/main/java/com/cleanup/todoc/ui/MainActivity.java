@@ -23,34 +23,17 @@ import com.cleanup.todoc.R;
 import com.cleanup.todoc.data.model.Project;
 import com.cleanup.todoc.data.model.Task;
 import com.cleanup.todoc.ui.utils.SortMethod;
-import com.cleanup.todoc.ui.utils.injection.ViewModelFactory;
+import com.cleanup.todoc.ui.injection.ViewModelFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 /**
- * <p>Home activity of the application which is displayed when the user opens the app.</p>
+ * Home activity of the application
  * <p>Displays the list of tasks.</p>
- *
- * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
-
-    private MainViewModel mMainViewModel;
-
-
-//            Arrays.asList(
-//            new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-//            new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-//            new Project(3L, "Projet Circus", 0xFFA3CED2));
-
-    /**
-     * List of all current tasks of the application
-     */
-    @NonNull
-    private final ArrayList<TaskViewState> tasks = new ArrayList<>();
 
     /**
      * The adapter which handles the list of tasks
@@ -78,37 +61,45 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * The RecyclerView which displays the list of tasks
      */
-    // Suppress warning is safe because variable is initialized in onCreate
-    @SuppressWarnings("NullableProblems")
     @NonNull
     private RecyclerView listTasks;
 
     /**
      * The TextView displaying the empty state
      */
-    // Suppress warning is safe because variable is initialized in onCreate
-    @SuppressWarnings("NullableProblems")
     @NonNull
     private TextView lblNoTasks;
+
+    /**
+     * Constant for ViewModel
+     */
+    private MainViewModel mMainViewModel;
+
+
+    /**
+     * List of all projects in the app
+     */
+    private List<Project> allProjects;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO : use viewBinding
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
-        //settings recyclerView
+        //settings for recyclerView
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
 
-        //settings for add button
+        //settings for addTask button
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAddTaskDialog();
+                if(allProjects != null){
+                    showAddTaskDialog();
+                }
             }
         });
 
@@ -116,14 +107,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         setViewModel();
     }
 
-    private List<Project> allProjects;
-
     /**
      * Settings to link ViewModel, Observer and UI
      */
     private void setViewModel() {
         mMainViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MainViewModel.class);
-        mMainViewModel.getTasks().observe(this, taskViewStates -> render(taskViewStates));
+        mMainViewModel.getTasks().observe(this, this::render);
         mMainViewModel.getProjects().observe(this, projects -> allProjects = projects);
     }
 
@@ -149,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actions, menu);
         return true;
-
     }
 
     /**
@@ -177,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * Method that delete a task
      *
-     * @param task the task that needs to be deleted
+     * @param task that needs to be deleted
      */
     @Override
     public void onDeleteTask(TaskViewState task) {
@@ -242,27 +230,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     /**
-     * Updates the list of tasks in the UI
-     */
-    private void updateTasks() {
-//            switch (sortMethod) {
-//                case ALPHABETICAL:
-//                    Collections.sort(tasks, new TasksComparator.TaskAZComparator());
-//                    break;
-//                case ALPHABETICAL_INVERTED:
-//                    Collections.sort(tasks, new TasksComparator.TaskZAComparator());
-//                    break;
-//                case RECENT_FIRST:
-//                    Collections.sort(tasks, new TasksComparator.TaskRecentComparator());
-//                    break;
-//                case OLD_FIRST:
-//                    Collections.sort(tasks, new TasksComparator.TaskOldComparator());
-//                    break;
-//
-//            }
-    }
-
-    /**
      * Returns the dialog allowing the user to create a new task.
      *
      * @return the dialog allowing the user to create a new task
@@ -315,6 +282,5 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             dialogSpinner.setAdapter(adapter);
         }
     }
-
 
 }

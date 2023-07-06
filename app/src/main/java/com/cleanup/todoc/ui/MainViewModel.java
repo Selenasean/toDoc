@@ -18,34 +18,49 @@ import java.util.List;
 public class MainViewModel extends ViewModel {
 
     private final Repository mRepository;
-    //private final LiveData<List<TaskViewState>> liveDataForTaskViewState;
     private final MediatorLiveData<List<TaskViewState>> taskListMediatorLiveData = new MediatorLiveData<>();
-    private final MutableLiveData<SortMethod> filterMutableLiveData = new MutableLiveData<>(SortMethod.OLD_FIRST);
+    private final MutableLiveData<SortMethod> sortingTypeMutableLiveData = new MutableLiveData<>(SortMethod.OLD_FIRST);
 
+    /**
+     * Constructor
+     * @param repository
+     */
     public MainViewModel(Repository repository) {
         mRepository = repository;
-//        liveDataForTaskViewState = Transformations.map(mRepository.getTasksLiveData(), tasks-> parseIntoViewState(tasks));
         LiveData<List<Task>> taskList = mRepository.getTasksLiveData();
         LiveData<List<Project>> projectsMutableLiveData = mRepository.getProjects();
+
         //combine in the callback's Observer data for the original list
         taskListMediatorLiveData.addSource(
                 taskList,
-                tasks -> combine(tasks, filterMutableLiveData.getValue(), projectsMutableLiveData.getValue()));
+                tasks -> combine(tasks, sortingTypeMutableLiveData.getValue(), projectsMutableLiveData.getValue()));
+        //combine in the callback's Observer data for update list of projects
         taskListMediatorLiveData.addSource(
                 projectsMutableLiveData,
-                projects -> combine(taskList.getValue(), filterMutableLiveData.getValue(), projects));
+                projects -> combine(taskList.getValue(), sortingTypeMutableLiveData.getValue(), projects));
+        //combine in the callback's Observer data for update the sorting type
         taskListMediatorLiveData.addSource(
-                filterMutableLiveData,
-                filter -> combine(taskList.getValue(), filter, projectsMutableLiveData.getValue()));
+                sortingTypeMutableLiveData,
+                sortingType -> combine(taskList.getValue(), sortingType, projectsMutableLiveData.getValue()));
     }
 
-    private void combine(List<Task> tasks, SortMethod filter, List<Project> projects) {
+
+    /**
+     * Method that combine all parameters that we need to :
+     * <p>- Display a list of tasks from the database,</p>
+     * <p>- Sort the list of tasks according to the sorting type,</p>
+     * <p>- Use the projects to parse the list of tasks into a list of taskViewState</p>
+     * @param tasks
+     * @param sortingType
+     * @param projects
+     */
+    private void combine(List<Task> tasks, SortMethod sortingType, List<Project> projects) {
         if (tasks == null || projects == null) {
             return;
         }
-        //sort according to filter
+        //sort according to sortingType
         List<TaskViewState> tasksFilterVS;
-        switch (filter) {
+        switch (sortingType) {
             case ALPHABETICAL:
                 Collections.sort(tasks, new TasksComparator.TaskAZComparator());
                 break;
@@ -61,13 +76,12 @@ public class MainViewModel extends ViewModel {
         }
         tasksFilterVS = parseIntoViewState(tasks, projects);
         taskListMediatorLiveData.setValue(tasksFilterVS);
-
     }
 
     /**
      * Get all task
      *
-     * @return list of task
+     * @return list of task -type LiveData-
      */
     public LiveData<List<TaskViewState>> getTasks() {
         return taskListMediatorLiveData;
@@ -76,7 +90,7 @@ public class MainViewModel extends ViewModel {
     /**
      * Get all projects
      *
-     * @return List of projects
+     * @return List of projects -type LiveData-
      */
     public LiveData<List<Project>> getProjects() {
         return mRepository.getProjects();
@@ -85,8 +99,8 @@ public class MainViewModel extends ViewModel {
     /**
      * To parse into TaskViewState for UI
      *
-     * @param list     af task
-     * @param projects
+     * @param list     af all task
+     * @param projects list of all projects
      * @return list of task fit into taskViewState model
      */
     private List<TaskViewState> parseIntoViewState(List<Task> list, List<Project> projects) {
@@ -106,7 +120,13 @@ public class MainViewModel extends ViewModel {
         return taskViewStateList;
     }
 
-    private Project getProjectById(List<Project> projects, long projectId) {
+    /**
+     * Allows to get a specific project linked to the interested task
+     * @param projects list of all projects
+     * @param projectId id of the project that is linked to the interested task
+     * @return the specific project we are searching for
+     */
+    public Project getProjectById(List<Project> projects, long projectId) {
         for (Project project : projects) {
             if (project.getId() == projectId) {
                 return project;
@@ -133,25 +153,38 @@ public class MainViewModel extends ViewModel {
         mRepository.deleteTask(taskId);
     }
 
-    //TODO : do filter
-    public void resetFilter(SortMethod none) {
-        filterMutableLiveData.setValue(none);
-    }
+    //METHODS TO SORT
 
+    /**
+     * Sort by alphabetical
+     * @param alphabetical
+     */
     public void sortAlphabetical(SortMethod alphabetical) {
-        filterMutableLiveData.setValue(alphabetical);
+        sortingTypeMutableLiveData.setValue(alphabetical);
     }
 
+    /**
+     * Sort by alphabetical inverted
+     * @param invertedAlphabetical
+     */
     public void sortAlphabeticalInverted(SortMethod invertedAlphabetical) {
-        filterMutableLiveData.setValue(invertedAlphabetical);
+        sortingTypeMutableLiveData.setValue(invertedAlphabetical);
     }
 
+    /**
+     * Sort by the most older task first
+     * @param olderFirst
+     */
     public void sortOlderFirst(SortMethod olderFirst) {
-        filterMutableLiveData.setValue(olderFirst);
+        sortingTypeMutableLiveData.setValue(olderFirst);
     }
 
+    /**
+     * Sort by the most recent task first
+     * @param recentFirst
+     */
     public void sortRecentFirst(SortMethod recentFirst) {
-        filterMutableLiveData.setValue(recentFirst);
+        sortingTypeMutableLiveData.setValue(recentFirst);
     }
 
 }

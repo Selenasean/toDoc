@@ -1,4 +1,5 @@
-package com.cleanup.todoc.utils;
+package com.cleanup.todoc.Utils;
+
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -32,3 +33,4 @@ public class LiveDataTestUtils {
         return (T) data[0];
     }
 }
+

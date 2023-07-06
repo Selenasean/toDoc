@@ -31,7 +31,7 @@ public class Repository {
 
     /**
      * Get a list of tasks type LiveData
-     * @return a list of tasks
+     * @return a list of tasks -type Livedata-
      */
     public LiveData<List<Task>> getTasksLiveData() {
         return database.taskDao().getTasks();
@@ -39,8 +39,7 @@ public class Repository {
 
     /**
      * Returns all the projects of the application.
-     *
-     * @return all the projects of the application
+     * @return all the projects of the application -type LiveData-
      */
     public LiveData<List<Project>> getProjects(){
         return database.projectDao().getProjects();
@@ -49,12 +48,17 @@ public class Repository {
 
     /**
      * Create a Task
+     * @param task that the user wants to create
      */
     public void createTask(Task task){
         executor.execute(()->
                 database.taskDao().createTask(task));
     }
 
+    /**
+     * Delete a task
+     * @param taskId of the task the user wants to delete
+     */
     public void deleteTask(long taskId){
         executor.execute(()->
                 database.taskDao().deleteTask(taskId));

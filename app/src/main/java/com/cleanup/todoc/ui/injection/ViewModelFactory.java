@@ -1,6 +1,4 @@
-package com.cleanup.todoc.ui.utils.injection;
-
-import android.app.Application;
+package com.cleanup.todoc.ui.injection;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -12,7 +10,7 @@ import com.cleanup.todoc.data.repository.Repository;
 import com.cleanup.todoc.ui.MainViewModel;
 
 /**
- * class who will create a new ViewModel for a new activity/fragment
+ * Class who will create a new ViewModel for a new activity/fragment
  */
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -38,6 +36,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
      private final Repository mRepository;
     /**
      * Constructor
+     * @param repository
      */
     private ViewModelFactory(Repository repository) {
         this.mRepository = repository;
@@ -48,7 +47,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
      *
      * @param modelClass model of classes ViewModel
      * @param <T>        type of Class, here of ViewModel
-     * @return new viewModel
+     * @return a new viewModel
      */
     @NonNull
     @Override

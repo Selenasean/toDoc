@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
+/**
+ * Unit tests for the DAO's project, which will execute on an Android device as an instrumented test
+ */
 @RunWith(AndroidJUnit4.class)
 public class ProjectDaoTest {
     // FOR DATA

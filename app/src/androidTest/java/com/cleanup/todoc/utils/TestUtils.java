@@ -14,7 +14,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 /**
- * Created by dannyroa on 5/9/15.
+ * Utils to use in test
+ * <p>Created by dannyroa on 5/9/15.</p>
  */
 public class TestUtils {
 

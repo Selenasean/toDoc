@@ -21,8 +21,4 @@ public enum SortMethod {
      * First created first
      */
     OLD_FIRST,
-    /**
-     * No sort
-     */
-    NONE
 }

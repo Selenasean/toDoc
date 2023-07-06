@@ -13,9 +13,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 /**
- * Unit tests for tasks
+ * Unit tests for tasks comparators
  *
- * @author Gaëtan HERFRAY
  */
 public class TaskComparatorTest {
 

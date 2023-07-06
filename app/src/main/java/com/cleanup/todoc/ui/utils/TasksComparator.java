@@ -4,6 +4,9 @@ import com.cleanup.todoc.data.model.Task;
 
 import java.util.Comparator;
 
+/**
+ * Comparators for sorting tasks
+ */
 public class TasksComparator {
     /**
      * Comparator to sort task from Z to A
