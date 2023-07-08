@@ -103,7 +103,7 @@ public class MainViewModel extends ViewModel {
      * @param projects list of all projects
      * @return list of task fit into taskViewState model
      */
-    private List<TaskViewState> parseIntoViewState(List<Task> list, List<Project> projects) {
+    public List<TaskViewState> parseIntoViewState(List<Task> list, List<Project> projects) {
         List<TaskViewState> taskViewStateList = new ArrayList<>();
 
         for (Task task : list) {

@@ -3,6 +3,8 @@ package com.cleanup.todoc.ui;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 /**
  * ViewState for Task, which is the model the data have to fit into
  */
@@ -15,6 +17,19 @@ public class TaskViewState {
 
     @ColorInt
     private final int colorProject;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TaskViewState)) return false;
+        TaskViewState that = (TaskViewState) o;
+        return getId() == that.getId() && getColorProject() == that.getColorProject() && getNameTask().equals(that.getNameTask());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNameTask(), getColorProject());
+    }
 
     public TaskViewState(long id, @NonNull String name, int colorProject) {
         this.id = id;
