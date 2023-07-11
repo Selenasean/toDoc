@@ -100,17 +100,10 @@ public class Task {
         this.id = id;
     }
 
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
-    }
-
     public void setName(@NonNull String name) {
         this.name = name;
     }
 
-    public void setCreationTimestamp(long creationTimestamp) {
-        this.creationTimestamp = creationTimestamp;
-    }
 
     @Override
     public boolean equals(Object o) {
