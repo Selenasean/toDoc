@@ -103,7 +103,7 @@ public class MainViewModel extends ViewModel {
      * @param projects list of all projects
      * @return list of task fit into taskViewState model
      */
-    public List<TaskViewState> parseIntoViewState(List<Task> list, List<Project> projects) {
+    private List<TaskViewState> parseIntoViewState(List<Task> list, List<Project> projects) {
         List<TaskViewState> taskViewStateList = new ArrayList<>();
 
         for (Task task : list) {
@@ -126,7 +126,7 @@ public class MainViewModel extends ViewModel {
      * @param projectId id of the project that is linked to the interested task
      * @return the specific project we are searching for
      */
-    public Project getProjectById(List<Project> projects, long projectId) {
+    private Project getProjectById(List<Project> projects, long projectId) {
         for (Project project : projects) {
             if (project.getId() == projectId) {
                 return project;

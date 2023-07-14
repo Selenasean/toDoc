@@ -77,23 +77,12 @@ public class MainViewModelTest {
 
     }
 
-    //TODO : test ViewModel methods
-
     @Test
-    public void getProjectById_withSuccess() throws InterruptedException {
-        // WHEN
-        List<Project> projectsList = LiveDataTestUtils.getOrAwaitValue(viewModel.getProjects());
-        Project project =  viewModel.getProjectById(projectsList, tasks.get(1).getProjectId());
-        // THEN
-        Truth.assertThat(project.getId()).isEqualTo(2L);
-    }
-
-    @Test
-    public void parseList_intoViewState_withSuccess(){
+    public void viewModelInitialState_withSuccess() throws InterruptedException {
         //WHEN
-        List<TaskViewState> tasksViewState = viewModel.parseIntoViewState(tasks, projects);
+        List<TaskViewState> tasksViewStates = LiveDataTestUtils.getOrAwaitValue(viewModel.getTasks());
         //THEN
-        Truth.assertThat(tasksViewState).containsExactlyElementsIn(tasksViewState);
+        Truth.assertThat(tasksViewStates).containsExactlyElementsIn(tasksViewState);
     }
 
     @Test
@@ -155,7 +144,6 @@ public class MainViewModelTest {
         viewModel.deleteTask(TASK_ID);
         //THEN the repository is called only once & it gets the same parameter as the viewModel
         Mockito.verify(repository, times(1)).deleteTask(TASK_ID);
-        Mockito.verify(repository).deleteTask(eq(TASK_ID));
     }
 
     @Test
@@ -164,6 +152,5 @@ public class MainViewModelTest {
         viewModel.createTask(TASK_CREATED);
         //THEN the repository is called only once & it gets the same parameter as the viewModel
         Mockito.verify(repository, times(1)).createTask(TASK_CREATED);
-        Mockito.verify(repository).createTask(eq(TASK_CREATED));
     }
 }
