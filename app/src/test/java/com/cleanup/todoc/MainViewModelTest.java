@@ -42,13 +42,12 @@ public class MainViewModelTest {
 
     //DATA FOR TEST
     private List<Task> tasks;
-    private List<Project> projects;
     private List<TaskViewState> tasksViewState;
     private Task TASK_CREATED;
 
     @Before
     public void setup() {
-       projects = Arrays.asList(
+        List<Project> projects = Arrays.asList(
                 new Project(1L, "Projet Tartampion", 0xFFEADAD1),
                 new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
                 new Project(3L, "Projet Circus", 0xFFA3CED2)
